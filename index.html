@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Fichas TTC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <h1>Generador de Fichas</h1>
+      <p id="status">Listo.</p>
+    </div>
+
+    <div class="main-menu">
+      <button id="btnVistaIndividual" class="menu-btn">Ficha individual</button>
+      <button id="btnVistaMasiva" class="menu-btn">Carga masiva</button>
+    </div>
+
+    <section id="vistaIndividual" class="view">
+      <div class="panel">
+        <div class="field">
+          <label for="operadorInput">Operador</label>
+          <input id="operadorInput" list="operadoresList" placeholder="Buscar operador" />
+          <datalist id="operadoresList"></datalist>
+        </div>
+
+        <div class="field">
+          <label for="tractorInput">Tractor</label>
+          <input id="tractorInput" list="tractoresList" placeholder="Buscar tractor" />
+          <datalist id="tractoresList"></datalist>
+        </div>
+
+        <div class="field">
+          <label for="remolqueInput">Remolque</label>
+          <input id="remolqueInput" list="remolquesList" placeholder="Buscar remolque" />
+          <datalist id="remolquesList"></datalist>
+        </div>
+
+        <button id="generarIndividualBtn">Generar ficha</button>
+      </div>
+
+      <div id="individualResult" class="results single-result"></div>
+    </section>
+
+    <section id="vistaMasiva" class="view">
+      <div class="panel">
+        <input id="excelFile" type="file" accept=".xlsx,.xls" />
+        <button id="processBtn">Procesar Excel</button>
+      </div>
+
+      <div id="summary" class="summary"></div>
+      <div id="results" class="results"></div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
