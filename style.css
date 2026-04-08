@@ -34,6 +34,7 @@ body {
   display: flex;
   gap: 12px;
   margin-bottom: 18px;
+  flex-wrap: wrap;
 }
 
 .menu-btn {
@@ -124,19 +125,39 @@ input:disabled {
 
 .results {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(740px, 1fr));
+  grid-template-columns: 1fr;
   gap: 18px;
 }
 
 .single-result {
-  grid-template-columns: minmax(740px, 980px);
+  grid-template-columns: 1fr;
 }
 
+.cliente-group {
+  margin-bottom: 28px;
+}
+
+.cliente-header {
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  border-left: 6px solid #e10600;
+  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* CONTENEDOR QUE PERMITE SCROLL HORIZONTAL EN MOVIL */
 .card {
   position: relative;
   display: grid;
   grid-template-columns: 240px 1fr;
   gap: 18px;
+  width: 100%;
+  min-width: 960px;
+  min-height: 540px;
   padding: 18px 20px;
   border-radius: 22px;
   overflow: hidden;
@@ -151,6 +172,11 @@ input:disabled {
     );
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.results > .card,
+.cliente-group .results > .card {
+  overflow-x: auto;
 }
 
 .card::before {
@@ -214,6 +240,7 @@ input:disabled {
   width: 100%;
   height: 250px;
   object-fit: cover;
+  object-position: center;
   border-radius: 14px;
   display: block;
   background: #2d2d2d;
@@ -364,37 +391,48 @@ input[readonly] {
   cursor: pointer;
 }
 
+/* MOVIL: NO ROMPE LA FICHA, SOLO AJUSTA CONTROLES */
 @media (max-width: 900px) {
-  .results,
+  .app {
+    width: min(100vw, 100%);
+    margin: 0;
+    padding: 12px;
+  }
+
+  .topbar h1 {
+    font-size: 24px;
+  }
+
+  .main-menu {
+    gap: 10px;
+  }
+
+  .menu-btn {
+    flex: 1 1 auto;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .field {
+    min-width: 100%;
+  }
+
+  .results {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
   .single-result {
-    grid-template-columns: 1fr;
+    overflow-x: auto;
+  }
+
+  .cliente-group .results {
+    overflow-x: auto;
   }
 
   .card {
-    grid-template-columns: 1fr;
+    min-width: 960px;
   }
-
-  .hero,
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .left {
-    max-width: 260px;
-  }
-}
-.cliente-group {
-  margin-bottom: 28px;
-}
-
-.cliente-header {
-  margin: 0 0 14px;
-  padding: 12px 16px;
-  border-left: 6px solid #e10600;
-  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
