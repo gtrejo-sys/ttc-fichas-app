@@ -247,9 +247,9 @@ input[readonly] {
 }
 
 .card-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-rows: auto auto;
+  align-content: start;
   gap: 12px;
 }
 
