@@ -250,10 +250,13 @@ input[readonly] {
 
 .card-left {
   display: grid;
-  grid-template-rows: auto 110px;
+  grid-template-rows: 260px 110px;
+  gap: 14px;
+  align-content: start;
 }
 
 .foto-frame {
+  height: 260px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
   padding: 10px;
   border-radius: 18px;
