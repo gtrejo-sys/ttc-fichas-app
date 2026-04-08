@@ -1,5 +1,9 @@
 const SHEET_ID = "1ShvndImW2blM-0wBnP7mJ5Riz8zzpvUFAoxlZzEhmNg";
 const CATALOG_XLSX_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=xlsx`;
+const loginScreenEl = document.getElementById("loginScreen");
+const mainAppEl = document.getElementById("mainApp");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const loginStatusEl = document.getElementById("loginStatus");
 
 const CATALOG_SHEET_NAMES = {
   tractores: "TRACTORES",
@@ -101,6 +105,53 @@ operadorInput.addEventListener("click", () => {
     operadorSeleccionadoValido = false;
   }
 });
+
+window.addEventListener("load", iniciarAutenticacion);
+
+async function iniciarAutenticacion() {
+  try {
+    if (!window.ttcAuth) {
+      throw new Error("Firebase Auth no esta disponible en window.ttcAuth");
+    }
+
+    if (!loginScreenEl || !mainAppEl || !googleLoginBtn || !loginStatusEl) {
+      throw new Error("Faltan elementos de login en el HTML");
+    }
+
+    const { auth, provider, signInWithPopup, onAuthStateChanged } = window.ttcAuth;
+
+    googleLoginBtn.addEventListener("click", async () => {
+  try {
+    googleLoginBtn.disabled = true;
+    loginStatusEl.textContent = "Abriendo Google...";
+    await signInWithPopup(auth, provider);
+  } catch (error) {
+    console.error("Firebase login error:", error);
+    loginStatusEl.textContent =
+      `No se pudo iniciar sesión: ${error.code || "sin-codigo"} | ${error.message || "sin-mensaje"}`;
+  } finally {
+    googleLoginBtn.disabled = false;
+  }
+});
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginScreenEl.style.display = "none";
+        mainAppEl.style.display = "block";
+        setStatus(`Sesión iniciada: ${user.email}`, "ok");
+      } else {
+        loginScreenEl.style.display = "flex";
+        mainAppEl.style.display = "none";
+        loginStatusEl.textContent = "";
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    if (loginStatusEl) {
+      loginStatusEl.textContent = "Error inicializando autenticación.";
+    }
+  }
+}
 
 function cambiarVista(vista) {
   const esIndividual = vista === "individual";
