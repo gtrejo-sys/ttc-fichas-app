@@ -250,13 +250,11 @@ input[readonly] {
 
 .card-left {
   display: grid;
-  grid-template-rows: 260px 110px;
+  grid-template-rows: 1fr 130px;
   gap: 14px;
-  align-content: start;
 }
 
 .foto-frame {
-  height: 320px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
   padding: 10px;
   border-radius: 18px;
@@ -265,7 +263,7 @@ input[readonly] {
 
 .foto {
   width: 100%;
-  height: 300px;   /* 🔥 AJUSTE CLAVE */
+  height: 100%;
   object-fit: cover;
   object-position: center;
   border-radius: 14px;
