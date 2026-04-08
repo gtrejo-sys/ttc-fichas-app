@@ -651,7 +651,8 @@ function renderCards(cards, targetEl) {
 
 function renderSingleCard(card) {
   return `
-    <div class="card">
+  <div class="card">
+    <div class="card-inner card-scale">
       <div class="left">
         <div class="foto-frame">
           <img class="foto" src="${escapeHtml(card.operatorPhoto)}" alt="Operador">
@@ -696,5 +697,6 @@ function renderSingleCard(card) {
         </div>
       </div>
     </div>
-  `;
+  </div>
+`;
 }

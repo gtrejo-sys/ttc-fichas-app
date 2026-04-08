@@ -149,14 +149,12 @@ input:disabled {
   letter-spacing: 0.04em;
 }
 
+/* CONTENEDOR DE TARJETA */
 .card {
   position: relative;
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 18px;
   width: 100%;
+  aspect-ratio: 16 / 9;
   min-height: 540px;
-  padding: 18px 20px;
   border-radius: 22px;
   overflow: hidden;
   background:
@@ -170,6 +168,31 @@ input:disabled {
     );
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ESCENA INTERNA FIJA */
+.card-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 960px;
+  height: 540px;
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 18px;
+  transform-origin: top left;
+}
+
+/* ESCALADO RESPONSIVO */
+.card-scale {
+  transform: scale(calc((100vw - 32px) / 960));
+}
+
+@media (min-width: 961px) {
+  .card-scale {
+    transform: scale(1);
+  }
 }
 
 .card::before {
@@ -384,34 +407,6 @@ input[readonly] {
   cursor: pointer;
 }
 
-/* TABLET */
-@media (max-width: 1024px) {
-  .app {
-    width: min(100%, 100vw);
-    margin: 0;
-    padding: 14px;
-  }
-
-  .card {
-    grid-template-columns: 210px 1fr;
-    min-height: auto;
-  }
-
-  .nombre {
-    font-size: 28px;
-  }
-
-  .hero-line {
-    font-size: 16px;
-  }
-
-  .camion {
-    max-width: 300px;
-    height: 160px;
-  }
-}
-
-/* MOVIL */
 @media (max-width: 760px) {
   .app {
     width: 100%;
@@ -444,78 +439,8 @@ input[readonly] {
     min-width: 100%;
   }
 
-  .card {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 14px;
-    min-height: auto;
-  }
-
-  .left {
-    gap: 12px;
-  }
-
-  .foto {
-    height: 220px;
-  }
-
-  .logo-box {
-    min-height: 90px;
-    padding: 10px;
-  }
-
-  .logo-empresa {
-    max-width: 150px;
-    max-height: 70px;
-  }
-
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .hero-info,
-  .hero-truck,
-  .block {
-    padding: 12px;
-  }
-
-  .nombre {
-    font-size: 20px;
-    line-height: 1.08;
-  }
-
-  .hero-line {
-    font-size: 14px;
-  }
-
-  .camion {
-    max-width: 220px;
-    height: 130px;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .block {
-    min-height: auto;
-  }
-
-  .linea {
-    font-size: 14px;
-  }
-
   .cliente-header {
     font-size: 16px;
     padding: 10px 12px;
-  }
-
-  .card::before {
-    width: 220px;
-    height: 140px;
-    top: -45px;
-    right: -35px;
   }
 }
