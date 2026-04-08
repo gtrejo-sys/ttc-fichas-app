@@ -1,55 +1,524 @@
-function renderSingleCard(card) {
-  return `
-    <div class="card-shell">
-      <div class="card-scale-wrap">
-        <div class="card">
-          <div class="card-grid">
-            <div class="card-left">
-              <div class="foto-frame">
-                <img class="foto" src="${escapeHtml(card.operatorPhoto)}" alt="Operador">
-              </div>
+* {
+  box-sizing: border-box;
+}
 
-              <div class="logo-box">
-                <img class="logo-empresa" src="${escapeHtml(card.companyLogo)}" alt="Logo empresa">
-              </div>
-            </div>
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(0, 60, 160, 0.18), transparent 25%),
+    radial-gradient(circle at top right, rgba(225, 6, 0, 0.12), transparent 18%),
+    linear-gradient(135deg, #05070b, #0b1220 35%, #090909 100%);
+  color: white;
+  font-family: Arial, sans-serif;
+}
 
-            <div class="card-right">
-              <div class="hero">
-                <div class="hero-info">
-                  <h2 class="nombre">${escapeHtml(card.operador)}</h2>
-                  <div class="hero-lines">
-                    <p class="hero-line"><span class="label">Licencia:</span> ${escapeHtml(card.licencia)}</p>
-                    <p class="hero-line"><span class="label">Contacto:</span> ${escapeHtml(card.contacto)}</p>
-                  </div>
-                </div>
+.app {
+  width: min(1320px, 94vw);
+  margin: 24px auto 40px;
+}
 
-                <div class="hero-truck">
-                  ${card.truckImage ? `<img class="camion" src="${escapeHtml(card.truckImage)}" alt="Camión">` : ""}
-                </div>
-              </div>
+.topbar h1 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
 
-              <div class="info-grid">
-                <div class="block">
-                  <div class="block-title">Tractor</div>
-                  <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.tractorEco)}</p>
-                  <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.tractorMarca)}</p>
-                  <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.tractorPlacas)}</p>
-                  <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.tractorModelo)}</p>
-                </div>
+.topbar p {
+  margin: 0 0 18px;
+  color: #cfcfcf;
+}
 
-                <div class="block">
-                  <div class="block-title">Remolque</div>
-                  <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.remolqueEco)}</p>
-                  <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.remolqueMarca)}</p>
-                  <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.remolquePlacas)}</p>
-                  <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.remolqueModelo)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
+.main-menu {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.menu-btn {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #3a3a3a;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.menu-btn.active {
+  background: #e10600;
+  border-color: #e10600;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.panel {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 240px;
+}
+
+label {
+  color: #cfcfcf;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+button,
+input[type="file"],
+input[list] {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+input[list],
+input[type="file"] {
+  background: #f4f4f4;
+  color: #111;
+}
+
+button {
+  background: #e10600;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  opacity: 0.92;
+}
+
+button:disabled,
+input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.summary {
+  margin-bottom: 18px;
+  color: #d9d9d9;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.single-result {
+  grid-template-columns: 1fr;
+}
+
+.cliente-group {
+  margin-bottom: 28px;
+}
+
+.cliente-header {
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  border-left: 6px solid #e10600;
+  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.error {
+  color: #ff8f8f;
+}
+
+.ok {
+  color: #8fe0a3;
+}
+
+.muted-status {
+  color: #cfcfcf;
+}
+
+input[readonly] {
+  background: #d8dde6;
+  cursor: pointer;
+}
+
+/* === FICHA NUEVA === */
+
+.card-shell {
+  width: 100%;
+  overflow: hidden;
+}
+
+.card-scale-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.card {
+  position: relative;
+  width: 1100px;
+  height: 620px;
+  margin: 0 auto;
+  transform-origin: top center;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(4, 16, 56, 0.98), rgba(4, 12, 33, 0.98) 42%, rgba(9, 9, 11, 0.99)),
+    repeating-linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 10px,
+      rgba(255, 255, 255, 0.008) 10px,
+      rgba(255, 255, 255, 0.008) 20px
+    );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  right: -50px;
+  width: 380px;
+  height: 240px;
+  background:
+    linear-gradient(
+      125deg,
+      transparent 0%,
+      transparent 10%,
+      rgba(225, 6, 0, 0.96) 10%,
+      rgba(225, 6, 0, 0.96) 15%,
+      rgba(255, 255, 255, 0.96) 15%,
+      rgba(255, 255, 255, 0.96) 20%,
+      rgba(0, 43, 127, 0.96) 20%,
+      rgba(0, 43, 127, 0.96) 25%,
+      transparent 25%,
+      transparent 30%,
+      rgba(225, 6, 0, 0.85) 30%,
+      rgba(225, 6, 0, 0.85) 33%,
+      rgba(255, 255, 255, 0.85) 33%,
+      rgba(255, 255, 255, 0.85) 36%,
+      transparent 36%
+    );
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 18%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.03), transparent 12%);
+}
+
+.card-grid {
+  position: absolute;
+  inset: 18px;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  z-index: 1;
+}
+
+.card-left {
+  display: grid;
+  grid-template-rows: 1fr 130px;
+  gap: 14px;
+}
+
+.foto-frame {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  padding: 10px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 14px;
+  display: block;
+  background: #2d2d2d;
+}
+
+.logo-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 10, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+.logo-empresa {
+  width: 100%;
+  max-width: 190px;
+  max-height: 95px;
+  object-fit: contain;
+  display: block;
+}
+
+.card-right {
+  display: grid;
+  grid-template-rows: 250px 1fr;
+  gap: 14px;
+  min-width: 0;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 14px;
+}
+
+.hero-info,
+.hero-truck,
+.block {
+  background: rgba(7, 10, 20, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  backdrop-filter: blur(2px);
+}
+
+.hero-info {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-truck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.nombre {
+  margin: 0 0 12px;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1.03;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 800;
+}
+
+.hero-lines {
+  display: grid;
+  gap: 8px;
+}
+
+.hero-line {
+  font-size: 17px;
+  color: #f2f2f2;
+  margin: 0;
+}
+
+.hero-line .label {
+  color: #b8c4d8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.camion {
+  width: 100%;
+  max-width: 340px;
+  height: 180px;
+  object-fit: contain;
+  display: block;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.block {
+  position: relative;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.block::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 auto;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(225, 6, 0, 0.18), transparent 65%);
+  pointer-events: none;
+}
+
+.block-title {
+  color: #ffffff;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  font-weight: 700;
+  border-left: 4px solid #e10600;
+  padding-left: 8px;
+}
+
+.linea {
+  font-size: 18px;
+  margin: 8px 0;
+  color: #f0f0f0;
+}
+
+.muted {
+  color: #b9c4d9;
+}
+
+/* === RESPONSIVE === */
+
+@media (max-width: 1200px) {
+  .app {
+    width: min(100%, 100vw);
+    padding: 14px;
+    margin: 0 auto 28px;
+  }
+
+  .card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1100 / 620;
+  }
+
+  .card-grid {
+    inset: 1.63%;
+    gap: 1.63%;
+    grid-template-columns: 23.64% 1fr;
+  }
+
+  .card-left {
+    grid-template-rows: 1fr 20.96%;
+    gap: 2.25%;
+  }
+
+  .card-right {
+    grid-template-rows: 40.32% 1fr;
+    gap: 2.25%;
+  }
+
+  .hero,
+  .info-grid {
+    gap: 2.25%;
+  }
+
+  .hero-info {
+    padding: 2.2%;
+  }
+
+  .hero-truck,
+  .block,
+  .logo-box {
+    padding: 1.8%;
+  }
+
+  .foto-frame {
+    padding: 1.3%;
+  }
+
+  .nombre {
+    font-size: clamp(18px, 3.2vw, 34px);
+    margin-bottom: 1.1%;
+  }
+
+  .hero-line {
+    font-size: clamp(10px, 1.6vw, 17px);
+  }
+
+  .linea {
+    font-size: clamp(10px, 1.65vw, 18px);
+    margin: 0.7% 0;
+  }
+
+  .block-title {
+    font-size: clamp(10px, 1.35vw, 15px);
+    margin-bottom: 1.1%;
+  }
+
+  .camion {
+    height: 70%;
+    max-width: 92%;
+  }
+
+  .logo-empresa {
+    max-width: 82%;
+    max-height: 72%;
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    padding: 12px;
+  }
+
+  .topbar h1 {
+    font-size: 22px;
+  }
+
+  .topbar p {
+    font-size: 14px;
+  }
+
+  .main-menu {
+    gap: 10px;
+  }
+
+  .menu-btn {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .field {
+    min-width: 100%;
+  }
+
+  .cliente-header {
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+
+  .card {
+    border-radius: 18px;
+  }
 }
