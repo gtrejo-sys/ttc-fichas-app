@@ -651,52 +651,56 @@ function renderCards(cards, targetEl) {
 
 function renderSingleCard(card) {
   return `
-  <div class="card">
-    <div class="card-inner card-scale">
-      <div class="left">
-        <div class="foto-frame">
-          <img class="foto" src="${escapeHtml(card.operatorPhoto)}" alt="Operador">
-        </div>
+    <div class="card-shell">
+      <div class="card-scale-wrap">
+        <div class="card">
+          <div class="card-grid">
+            <div class="card-left">
+              <div class="foto-frame">
+                <img class="foto" src="${escapeHtml(card.operatorPhoto)}" alt="Operador">
+              </div>
 
-        <div class="logo-box">
-          <img class="logo-empresa" src="${escapeHtml(card.companyLogo)}" alt="Logo empresa">
-        </div>
-      </div>
-
-      <div class="right">
-        <div class="hero">
-          <div class="hero-info">
-            <h2 class="nombre">${escapeHtml(card.operador)}</h2>
-            <div class="hero-lines">
-              <p class="hero-line"><span class="label">Licencia:</span> ${escapeHtml(card.licencia)}</p>
-              <p class="hero-line"><span class="label">Contacto:</span> ${escapeHtml(card.contacto)}</p>
+              <div class="logo-box">
+                <img class="logo-empresa" src="${escapeHtml(card.companyLogo)}" alt="Logo empresa">
+              </div>
             </div>
-          </div>
 
-          <div class="hero-truck">
-            ${card.truckImage ? `<img class="camion" src="${escapeHtml(card.truckImage)}" alt="Camión">` : ""}
-          </div>
-        </div>
+            <div class="card-right">
+              <div class="hero">
+                <div class="hero-info">
+                  <h2 class="nombre">${escapeHtml(card.operador)}</h2>
+                  <div class="hero-lines">
+                    <p class="hero-line"><span class="label">Licencia:</span> ${escapeHtml(card.licencia)}</p>
+                    <p class="hero-line"><span class="label">Contacto:</span> ${escapeHtml(card.contacto)}</p>
+                  </div>
+                </div>
 
-        <div class="info-grid">
-          <div class="block">
-            <div class="block-title">Tractor</div>
-            <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.tractorEco)}</p>
-            <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.tractorMarca)}</p>
-            <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.tractorPlacas)}</p>
-            <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.tractorModelo)}</p>
-          </div>
+                <div class="hero-truck">
+                  ${card.truckImage ? `<img class="camion" src="${escapeHtml(card.truckImage)}" alt="Camión">` : ""}
+                </div>
+              </div>
 
-          <div class="block">
-            <div class="block-title">Remolque</div>
-            <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.remolqueEco)}</p>
-            <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.remolqueMarca)}</p>
-            <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.remolquePlacas)}</p>
-            <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.remolqueModelo)}</p>
+              <div class="info-grid">
+                <div class="block">
+                  <div class="block-title">Tractor</div>
+                  <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.tractorEco)}</p>
+                  <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.tractorMarca)}</p>
+                  <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.tractorPlacas)}</p>
+                  <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.tractorModelo)}</p>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Remolque</div>
+                  <p class="linea"><span class="muted">Económico:</span> ${escapeHtml(card.remolqueEco)}</p>
+                  <p class="linea"><span class="muted">Marca:</span> ${escapeHtml(card.remolqueMarca)}</p>
+                  <p class="linea"><span class="muted">Placas:</span> ${escapeHtml(card.remolquePlacas)}</p>
+                  <p class="linea"><span class="muted">Modelo:</span> ${escapeHtml(card.remolqueModelo)}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-`;
+  `;
 }
