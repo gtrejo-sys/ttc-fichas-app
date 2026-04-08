@@ -247,14 +247,15 @@ input[readonly] {
 }
 
 .card-left {
-  display: grid;
-  grid-template-rows: 1fr 18%;
-  gap: 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
 .card-right {
   display: grid;
-  grid-template-rows: 36% 1fr;
+  grid-template-rows: 42% 1fr;
   gap: 2%;
   min-width: 0;
 }
@@ -311,6 +312,8 @@ input[readonly] {
 }
 
 .foto-frame {
+  height: 68%;
+  max-height: 320px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,6 +330,7 @@ input[readonly] {
 }
 
 .logo-box {
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -367,6 +371,10 @@ input[readonly] {
   color: #b8c4d8;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+.hero-info {
+  padding: 4%;
 }
 
 .camion {
