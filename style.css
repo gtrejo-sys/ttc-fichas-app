@@ -251,7 +251,6 @@ input[readonly] {
 .card-left {
   display: grid;
   grid-template-rows: auto 110px;
-  gap: 14px;
 }
 
 .foto-frame {
