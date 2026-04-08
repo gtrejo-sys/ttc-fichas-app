@@ -250,7 +250,7 @@ input[readonly] {
 
 .card-left {
   display: grid;
-  grid-template-rows: 1fr 130px;
+  grid-template-rows: auto 110px;
   gap: 14px;
 }
 
@@ -263,7 +263,7 @@ input[readonly] {
 
 .foto {
   width: 100%;
-  height: 100%;
+  height: 220px;   /* 🔥 AJUSTE CLAVE */
   object-fit: cover;
   object-position: center;
   border-radius: 14px;
