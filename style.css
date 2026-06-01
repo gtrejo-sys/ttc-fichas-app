@@ -1,466 +1,57 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(0, 60, 160, 0.18), transparent 25%),
-    radial-gradient(circle at top right, rgba(225, 6, 0, 0.12), transparent 18%),
-    linear-gradient(135deg, #05070b, #0b1220 35%, #090909 100%);
-  color: white;
-  font-family: Arial, sans-serif;
-}
-
-.app {
-  width: min(1320px, 94vw);
-  margin: 24px auto 40px;
-}
-
-.topbar h1 {
-  margin: 0 0 8px;
-  color: #ffffff;
-  font-size: 32px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.topbar p {
-  margin: 0 0 18px;
-  color: #cfcfcf;
-}
-
-.main-menu {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-}
-
-.menu-btn {
-  background: #2a2a2a;
-  color: white;
-  border: 1px solid #3a3a3a;
-  padding: 12px 16px;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.menu-btn.active {
-  background: #e10600;
-  border-color: #e10600;
-}
-
-.view {
-  display: none;
-}
-
-.view.active {
-  display: block;
-}
-
-.panel {
-  display: flex;
-  gap: 12px;
-  align-items: end;
-  flex-wrap: wrap;
-  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 16px;
-  border-radius: 16px;
-  margin-bottom: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 240px;
-}
-
-label {
-  color: #cfcfcf;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-button,
-input[type="file"],
-input[list] {
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px;
-}
-
-input[list],
-input[type="file"] {
-  background: #f4f4f4;
-  color: #111;
-}
-
-button {
-  background: #e10600;
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-button:hover {
-  opacity: 0.92;
-}
-
-button:disabled,
-input:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.summary {
-  margin-bottom: 18px;
-  color: #d9d9d9;
-}
-
-.results {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-}
-
-.single-result {
-  grid-template-columns: 1fr;
-}
-
-.cliente-group {
-  margin-bottom: 28px;
-}
-
-.cliente-header {
-  margin: 0 0 14px;
-  padding: 12px 16px;
-  border-left: 6px solid #e10600;
-  background: linear-gradient(135deg, rgba(13, 18, 29, 0.92), rgba(18, 18, 18, 0.96));
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.error {
-  color: #ff8f8f;
-}
-
-.ok {
-  color: #8fe0a3;
-}
-
-.muted-status {
-  color: #cfcfcf;
-}
-
-input[readonly] {
-  background: #d8dde6;
-  cursor: pointer;
-}
-
-/* ===== FICHA ESTATICA ===== */
-
-.card-shell {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.card-scale-wrap {
-  width: min(100%, 1020px);
-}
-
-.card {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 22px;
-  overflow: hidden;
-  background:
-    linear-gradient(135deg, rgba(4, 16, 56, 0.98), rgba(4, 12, 33, 0.98) 42%, rgba(9, 9, 11, 0.99)),
-    repeating-linear-gradient(
-      120deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 10px,
-      rgba(255, 255, 255, 0.008) 10px,
-      rgba(255, 255, 255, 0.008) 20px
-    );
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42);
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  top: -8%;
-  right: -4%;
-  width: 34%;
-  height: 28%;
-  background:
-    linear-gradient(
-      125deg,
-      transparent 0%,
-      transparent 10%,
-      rgba(225, 6, 0, 0.96) 10%,
-      rgba(225, 6, 0, 0.96) 15%,
-      rgba(255, 255, 255, 0.96) 15%,
-      rgba(255, 255, 255, 0.96) 20%,
-      rgba(0, 43, 127, 0.96) 20%,
-      rgba(0, 43, 127, 0.96) 25%,
-      transparent 25%,
-      transparent 30%,
-      rgba(225, 6, 0, 0.85) 30%,
-      rgba(225, 6, 0, 0.85) 33%,
-      rgba(255, 255, 255, 0.85) 33%,
-      rgba(255, 255, 255, 0.85) 36%,
-      transparent 36%
-    );
-  transform: rotate(12deg);
-  pointer-events: none;
-}
-
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 18%),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.03), transparent 12%);
-}
-
-.card-grid {
-  position: absolute;
-  inset: 2.2%;
-  display: grid;
-  grid-template-columns: 22% 1fr;
-  gap: 1.8%;
-  z-index: 1;
-}
-
-.card-left {
-  display: grid;
-  grid-template-rows: auto auto;
-  align-content: start;
-  gap: 12px;
-}
-
-.card-right {
-  display: grid;
-  grid-template-rows: 42% 1fr;
-  gap: 2%;
-  min-width: 0;
-}
-
-.hero {
-  display: grid;
-  grid-template-columns: 1.08fr 0.92fr;
-  gap: 1.8%;
-}
-
-.hero-info,
-.hero-truck,
-.block,
-.logo-box {
-  background: rgba(7, 10, 20, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-}
-
-.hero-info {
-  padding: 4%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-truck {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3%;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.8%;
-}
-
-.block {
-  position: relative;
-  padding: 4%;
-  overflow: hidden;
-}
-
-.block::before {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 auto;
-  width: 28%;
-  height: 42%;
-  background: radial-gradient(circle, rgba(225, 6, 0, 0.18), transparent 65%);
-  pointer-events: none;
-}
-
-.foto-frame {
-  width: 100%;
-  aspect-ratio: 1 / 1.2;
-  max-height: 280px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
-  padding: 4%;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.foto {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 14px;
-  display: block;
-  background: #2d2d2d;
-}
-
-.logo-box {
-  width: 100%;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5%;
-}
-
-.logo-empresa {
-  width: 100%;
-  max-width: 72%;
-  max-height: 64%;
-  object-fit: contain;
-  display: block;
-}
-
-.nombre {
-  margin: 0 0 3%;
-  color: #ffffff;
-  font-size: clamp(15px, 3.1vw, 34px);
-  line-height: 1.02;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  font-weight: 800;
-}
-
-.hero-lines {
-  display: grid;
-  gap: 6%;
-}
-
-.hero-line {
-  font-size: clamp(8px, 1.45vw, 17px);
-  color: #f2f2f2;
-  margin: 0;
-  line-height: 1.18;
-}
-
-.hero-line .label {
-  color: #b8c4d8;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.camion {
-  width: 100%;
-  max-width: 86%;
-  max-height: 78%;
-  object-fit: contain;
-  display: block;
-}
-
-.block-title {
-  color: #ffffff;
-  font-size: clamp(8px, 1.18vw, 14px);
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  margin-bottom: 5%;
-  font-weight: 700;
-  border-left: 3px solid #e10600;
-  padding-left: 6px;
-}
-
-.linea {
-  font-size: clamp(8px, 1.2vw, 16px);
-  margin: 3% 0;
-  color: #f0f0f0;
-  line-height: 1.2;
-}
-
-.muted {
-  color: #b9c4d9;
-}
-
-/* SOLO CONTROLES, NO FICHA */
-@media (max-width: 760px) {
-  .app {
-    width: 100%;
-    margin: 0;
-    padding: 10px;
-  }
-
-  .topbar h1 {
-    font-size: 22px;
-  }
-
-  .topbar p {
-    font-size: 14px;
-  }
-
-  .main-menu {
-    gap: 10px;
-  }
-
-  .menu-btn {
-    flex: 1 1 0;
-    text-align: center;
-  }
-
-  .panel {
-    padding: 14px;
-  }
-
-  .field {
-    min-width: 100%;
-  }
-
-  .cliente-header {
-    font-size: 15px;
-    padding: 10px 12px;
-  }
-
-  .card {
-    border-radius: 18px;
-  }
-
-  .hero-info,
-  .hero-truck,
-  .block,
-  .logo-box,
-  .foto-frame {
-    border-radius: 12px;
-  }
-
-  .foto {
-    border-radius: 10px;
-  }
-}
+# TTC Fichas - version segura para Vercel
+
+Esta version evita que el navegador descargue el Google Sheet directamente.
+El frontend llama a `/api/catalogos`, y esa API:
+
+1. Verifica el token de Firebase Auth.
+2. Rechaza correos que no sean de dominios autorizados.
+3. Lee el Google Sheet privado con una cuenta de servicio.
+4. Regresa solo los catalogos necesarios a la app.
+
+## Variables de entorno en Vercel
+
+En Vercel > Project > Settings > Environment Variables agrega:
+
+```txt
+FIREBASE_PROJECT_ID=ttc-fichas-app
+FIREBASE_CLIENT_EMAIL=correo-de-la-cuenta-de-servicio
+FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+GOOGLE_SHEET_ID=1ShvndImW2blM-0wBnP7mJ5Riz8zzpvUFAoxlZzEhmNg
+ALLOWED_EMAIL_DOMAINS=transportesttc.com.mx,kananlogistic.com.mx
+```
+
+Si quieres usar credenciales separadas para Google Sheets:
+
+```txt
+GOOGLE_CLIENT_EMAIL=correo-de-la-cuenta-de-servicio
+GOOGLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+```
+
+Si no las defines, la API usa `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY`
+tambien para Google Sheets.
+
+## Pasos en Google Cloud / Firebase
+
+1. En Firebase Console, abre Project Settings > Service accounts.
+2. Genera una nueva private key para Node.js Admin SDK.
+3. Copia `project_id`, `client_email` y `private_key` a Vercel.
+4. En Google Cloud, confirma que Google Sheets API este habilitada.
+5. Abre tu Google Sheet y compartelo con el `client_email` de la cuenta de servicio.
+6. Pon el Google Sheet como Restringido, no publico.
+
+## Deploy
+
+Sube esta carpeta como el proyecto de Vercel:
+
+```powershell
+npm install
+vercel deploy --prod
+```
+
+O conectala a GitHub y deja que Vercel haga el deploy.
+
+## Nota
+
+Mantener el Sheet publico no se puede ocultar de verdad. Si el navegador puede
+descargarlo, cualquier persona puede encontrar la URL en el JavaScript publico.
+La solucion segura es que solo el servidor de Vercel tenga acceso al Sheet.

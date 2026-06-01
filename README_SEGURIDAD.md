@@ -1,57 +1,124 @@
-# TTC Fichas - version segura para Vercel
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador de Fichas TTC</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-Esta version evita que el navegador descargue el Google Sheet directamente.
-El frontend llama a `/api/catalogos`, y esa API:
+<body>
 
-1. Verifica el token de Firebase Auth.
-2. Rechaza correos que no sean `@transportesttc.com.mx`.
-3. Lee el Google Sheet privado con una cuenta de servicio.
-4. Regresa solo los catalogos necesarios a la app.
+  <!-- 🔐 LOGIN -->
+  <div id="loginScreen" style="display:flex;min-height:100vh;align-items:center;justify-content:center;background:#0b1220;">
+    <div style="background:#111827;padding:32px;border-radius:16px;text-align:center;max-width:420px;width:90%;color:white;">
+      <h2 style="margin-top:0;">TTC Fichas</h2>
+      <p>Inicia sesión para continuar</p>
+      <button id="googleLoginBtn" style="padding:12px 18px;border:none;border-radius:10px;background:#e10600;color:white;cursor:pointer;">
+        Continuar con Google
+      </button>
+      <p id="loginStatus" style="margin-top:14px;color:#cfcfcf;"></p>
+    </div>
+  </div>
 
-## Variables de entorno en Vercel
+  <!-- 🚀 APP -->
+  <div class="app" id="mainApp" style="display:none;">
 
-En Vercel > Project > Settings > Environment Variables agrega:
+    <div class="topbar">
+      <h1>Generador de Fichas</h1>
+      <p id="status">Listo.</p>
+    </div>
 
-```txt
-FIREBASE_PROJECT_ID=ttc-fichas-app
-FIREBASE_CLIENT_EMAIL=correo-de-la-cuenta-de-servicio
-FIREBASE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
-GOOGLE_SHEET_ID=1ShvndImW2blM-0wBnP7mJ5Riz8zzpvUFAoxlZzEhmNg
-ALLOWED_EMAIL_DOMAIN=transportesttc.com.mx
-```
+    <div class="main-menu">
+      <button id="btnVistaIndividual" class="menu-btn">Ficha individual</button>
+      <button id="btnVistaMasiva" class="menu-btn">Carga masiva</button>
+    </div>
 
-Si quieres usar credenciales separadas para Google Sheets:
+    <!-- INDIVIDUAL -->
+    <section id="vistaIndividual" class="view">
+      <div class="panel">
+        <div class="field">
+          <label>Operador</label>
+          <input id="operadorInput" list="operadoresList" placeholder="Buscar operador" />
+          <datalist id="operadoresList"></datalist>
+        </div>
 
-```txt
-GOOGLE_CLIENT_EMAIL=correo-de-la-cuenta-de-servicio
-GOOGLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
-```
+        <div class="field">
+          <label>Tractor</label>
+          <input id="tractorInput" list="tractoresList" placeholder="Buscar tractor" />
+          <datalist id="tractoresList"></datalist>
+        </div>
 
-Si no las defines, la API usa `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY`
-tambien para Google Sheets.
+        <div class="field">
+          <label>Remolque</label>
+          <input id="remolqueInput" list="remolquesList" placeholder="Buscar remolque" />
+          <datalist id="remolquesList"></datalist>
+        </div>
 
-## Pasos en Google Cloud / Firebase
+        <button id="generarIndividualBtn">Generar ficha</button>
+      </div>
 
-1. En Firebase Console, abre Project Settings > Service accounts.
-2. Genera una nueva private key para Node.js Admin SDK.
-3. Copia `project_id`, `client_email` y `private_key` a Vercel.
-4. En Google Cloud, confirma que Google Sheets API este habilitada.
-5. Abre tu Google Sheet y compartelo con el `client_email` de la cuenta de servicio.
-6. Pon el Google Sheet como Restringido, no publico.
+      <div id="individualResult" class="results"></div>
+    </section>
 
-## Deploy
+    <!-- MASIVA -->
+    <section id="vistaMasiva" class="view">
+      <div class="panel">
+        <input id="excelFile" type="file" accept=".xlsx,.xls" />
+        <button id="processBtn">Procesar Excel</button>
+      </div>
 
-Sube esta carpeta como el proyecto de Vercel:
+      <div id="summary"></div>
+      <div id="results"></div>
+    </section>
 
-```powershell
-npm install
-vercel deploy --prod
-```
+  </div>
 
-O conectala a GitHub y deja que Vercel haga el deploy.
+  <!-- 📦 XLSX -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-## Nota
+  <!-- 🔥 FIREBASE BASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
-Mantener el Sheet publico no se puede ocultar de verdad. Si el navegador puede
-descargarlo, cualquier persona puede encontrar la URL en el JavaScript publico.
-La solucion segura es que solo el servidor de Vercel tenga acceso al Sheet.
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgByxRK8Vkl2kWLG-Dt037zb1ZTFtH8_Y",
+      authDomain: "ttc-fichas-app.firebaseapp.com",
+      projectId: "ttc-fichas-app",
+      storageBucket: "ttc-fichas-app.firebasestorage.app",
+      messagingSenderId: "273571785684",
+      appId: "1:273571785684:web:8a6854f35c8b4073714441",
+      measurementId: "G-DMBVBJW0PT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.firebaseApp = app;
+  </script>
+
+  <!-- 🔐 FIREBASE AUTH -->
+  <script type="module">
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+    const auth = getAuth(window.firebaseApp);
+    const provider = new GoogleAuthProvider();
+
+    window.ttcAuth = {
+      auth,
+      provider,
+      signInWithPopup,
+      onAuthStateChanged,
+      signOut
+    };
+  </script>
+
+  <!-- 🧠 TU SCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>
