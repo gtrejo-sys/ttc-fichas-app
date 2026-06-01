@@ -1,5 +1,4 @@
-const SHEET_ID = "1ShvndImW2blM-0wBnP7mJ5Riz8zzpvUFAoxlZzEhmNg";
-const CATALOG_XLSX_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=xlsx`;
+const CATALOG_API_URL = "/api/catalogos";
 const loginScreenEl = document.getElementById("loginScreen");
 const mainAppEl = document.getElementById("mainApp");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
@@ -274,6 +273,21 @@ function sheetToRowsWithHeaderRow(workbook, sheetName, headerRowIndexZeroBased) 
   });
 }
 
+function rowsFromApiSheet(matrix, headerRowIndexZeroBased) {
+  const headers = (matrix?.[headerRowIndexZeroBased] || []).map(normalizeHeader);
+  const dataRows = (matrix || []).slice(headerRowIndexZeroBased + 1);
+
+  return dataRows.map(row => {
+    const out = {};
+    headers.forEach((header, index) => {
+      if (header) {
+        out[header] = row[index] ?? "";
+      }
+    });
+    return out;
+  });
+}
+
 function convertGoogleDriveImageUrl(url) {
   const text = String(url || "").trim();
 
@@ -316,18 +330,30 @@ async function cargarCatalogosSiEsNecesario() {
 async function ensureCatalogsLoaded() {
   if (state.catalogsLoaded) return;
 
-  const response = await fetch(CATALOG_XLSX_URL);
-  if (!response.ok) {
-    throw new Error("No se pudo descargar el workbook remoto");
+  const user = window.ttcAuth?.auth?.currentUser;
+  if (!user) {
+    throw new Error("Sesion expirada. Inicia sesion de nuevo.");
   }
 
-  const arrayBuffer = await response.arrayBuffer();
-  const workbook = XLSX.read(arrayBuffer, { type: "array" });
+  const token = await user.getIdToken();
+  const response = await fetch(CATALOG_API_URL, {
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  const tractoresRows = sheetToRowsWithHeaderRow(workbook, CATALOG_SHEET_NAMES.tractores, 0);
-  const remolquesRows = sheetToRowsWithHeaderRow(workbook, CATALOG_SHEET_NAMES.remolques, 0);
-  const licenciasRows = sheetToRowsWithHeaderRow(workbook, CATALOG_SHEET_NAMES.licencias, 0);
-  const marcasRows = sheetToRowsWithHeaderRow(workbook, CATALOG_SHEET_NAMES.marcas, 0);
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(payload?.error || "No se pudieron cargar los catalogos");
+  }
+
+  const sheets = payload?.sheets || {};
+
+  const tractoresRows = rowsFromApiSheet(sheets[CATALOG_SHEET_NAMES.tractores], 0);
+  const remolquesRows = rowsFromApiSheet(sheets[CATALOG_SHEET_NAMES.remolques], 0);
+  const licenciasRows = rowsFromApiSheet(sheets[CATALOG_SHEET_NAMES.licencias], 0);
+  const marcasRows = rowsFromApiSheet(sheets[CATALOG_SHEET_NAMES.marcas], 0);
 
   state.tractores.clear();
   state.remolques.clear();
