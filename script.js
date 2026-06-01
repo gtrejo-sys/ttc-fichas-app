@@ -1,4 +1,5 @@
 const CATALOG_API_URL = "/api/catalogos";
+const ALLOWED_EMAIL_DOMAIN = "transportesttc.com.mx";
 const loginScreenEl = document.getElementById("loginScreen");
 const mainAppEl = document.getElementById("mainApp");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
@@ -117,7 +118,7 @@ async function iniciarAutenticacion() {
       throw new Error("Faltan elementos de login en el HTML");
     }
 
-    const { auth, provider, signInWithPopup, onAuthStateChanged } = window.ttcAuth;
+    const { auth, provider, signInWithPopup, onAuthStateChanged, signOut } = window.ttcAuth;
 
     googleLoginBtn.addEventListener("click", async () => {
   try {
@@ -133,8 +134,16 @@ async function iniciarAutenticacion() {
   }
 });
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
+        if (!isAllowedCompanyUser(user)) {
+          loginScreenEl.style.display = "flex";
+          mainAppEl.style.display = "none";
+          loginStatusEl.textContent = `Acceso permitido solo para correos @${ALLOWED_EMAIL_DOMAIN}.`;
+          await signOut(auth);
+          return;
+        }
+
         loginScreenEl.style.display = "none";
         mainAppEl.style.display = "block";
         setStatus(`Sesión iniciada: ${user.email}`, "ok");
@@ -150,6 +159,11 @@ async function iniciarAutenticacion() {
       loginStatusEl.textContent = "Error inicializando autenticación.";
     }
   }
+}
+
+function isAllowedCompanyUser(user) {
+  const email = String(user?.email || "").trim().toLowerCase();
+  return Boolean(email && email.endsWith(`@${ALLOWED_EMAIL_DOMAIN}`));
 }
 
 function cambiarVista(vista) {
