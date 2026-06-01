@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const { google } = require("googleapis");
 
 const SHEET_NAMES = ["TRACTORES", "REMOLQUES", "LICENCIAS", "MARCAS"];
-const DEFAULT_ALLOWED_DOMAIN = "transportesttc.com.mx";
+const DEFAULT_ALLOWED_DOMAINS = ["transportesttc.com.mx", "kananlogistic.com.mx"];
 
 function privateKeyFromEnv(value) {
   return String(value || "").replace(/\\n/g, "\n");
@@ -54,21 +54,29 @@ async function verifyAuthorizedUser(req) {
 
   const decoded = await admin.auth().verifyIdToken(match[1]);
   const email = String(decoded.email || "").toLowerCase();
-  const allowedDomain = String(
-    process.env.ALLOWED_EMAIL_DOMAIN || DEFAULT_ALLOWED_DOMAIN
-  )
-    .replace(/^@/, "")
-    .toLowerCase();
+  const allowedDomains = getAllowedEmailDomains();
 
   if (!email || decoded.email_verified === false) {
     throw Object.assign(new Error("Correo no verificado"), { statusCode: 403 });
   }
 
-  if (!email.endsWith(`@${allowedDomain}`)) {
+  if (!allowedDomains.some(domain => email.endsWith(`@${domain}`))) {
     throw Object.assign(new Error("Correo no autorizado"), { statusCode: 403 });
   }
 
   return decoded;
+}
+
+function getAllowedEmailDomains() {
+  const raw =
+    process.env.ALLOWED_EMAIL_DOMAINS ||
+    process.env.ALLOWED_EMAIL_DOMAIN ||
+    DEFAULT_ALLOWED_DOMAINS.join(",");
+
+  return String(raw)
+    .split(",")
+    .map(domain => domain.trim().replace(/^@/, "").toLowerCase())
+    .filter(Boolean);
 }
 
 async function readCatalogSheets() {
